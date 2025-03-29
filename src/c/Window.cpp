@@ -49,11 +49,28 @@ namespace Core {
 			data.width = width;
 			data.height = haight;
 
-			Event iv;
-			iv.width = width;
-			iv.height = haight;
-			data.event(iv);
+			EventWindowResize event(width, haight);
+			data.eventCallback(event);
+
 		});
+
+		glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
+
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+			EventWindowClose event;
+			data.eventCallback(event);
+
+		});
+
+		glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y) {
+
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+			EventMouseMoved event(x, y);
+			data.eventCallback(event);
+
+			});
 
 		return 0;
 	}
@@ -72,8 +89,4 @@ namespace Core {
 		glfwPollEvents();
 	}
 
-	void Window::setEventCallback(const EventCallback callback) {
-
-		m_data.event = callback;
-	}
 }

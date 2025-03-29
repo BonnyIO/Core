@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../h/Event.hpp"
 #include <memory>
 
 namespace Core {
@@ -23,5 +23,7 @@ namespace Core {
 	private:
 
 		std::unique_ptr<class Window> m_window;
+		EventDispatcher m_dispaccher;
+		bool closeWindow = false;
 	};
 }

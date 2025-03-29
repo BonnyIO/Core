@@ -12,7 +12,7 @@ namespace Core {
 
 	public:
 
-		using EventCallback = std::function<void(Event&)>;
+		using EventCallback = std::function<void(BaseEvent&)>;
 
 		Window(std::string title, const unsigned int width, const unsigned int height);
 		~Window();
@@ -25,7 +25,7 @@ namespace Core {
 		void gameUpdate();
 		unsigned int getWidth() const { return m_data.width; }
 		unsigned int getHeight() const { return m_data.height; }
-		void setEventCallback(const EventCallback callback);
+		void setEventCallback(const EventCallback callback) { m_data.eventCallback = callback;}
 
 	private:
 
@@ -34,7 +34,7 @@ namespace Core {
 			std::string title;
 			unsigned int width;
 			unsigned int height;
-			EventCallback event;
+			EventCallback eventCallback;
 		};
 
 		int init();

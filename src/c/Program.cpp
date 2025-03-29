@@ -1,5 +1,6 @@
 #include "../h/Program.hpp"
 #include "../h/Window.hpp"
+#include "../h/Event.hpp"
 #include "../h/Log.hpp"
 
 
@@ -20,14 +21,39 @@ namespace Core {
 
         m_window = std::make_unique<Window>(title, windowWidth, windowHeidht);
 
-        m_window->setEventCallback([](Event& event){LOG_INFO("[EVENT] Changed size to {0}x{1}", event.width, event.height);});
+        m_dispaccher.event_listener<EventMouseMoved>([](EventMouseMoved& event) {
 
-        while (true) {
+            LOG_INFO("[MouseMoved] Mouse moved to {0}x{1}", event.x, event.y);
+
+        });
+
+        m_dispaccher.event_listener<EventWindowResize>([](EventWindowResize& event) {
+
+            LOG_INFO("[Resized] Changed size to {0}x{1}", event.width, event.height);
+
+        });
+
+        m_dispaccher.event_listener<EventWindowClose>([&](EventWindowClose& event) {
+
+            LOG_INFO("[Window Close]");
+            closeWindow = true;
+
+        });
+
+        m_window->setEventCallback([&](BaseEvent& event) {
+            
+            m_dispaccher.dispatch(event);
+            
+        });
+
+        while (!closeWindow) {
 
             m_window->gameUpdate();
            
             on_update();
         }
+
+        m_window = nullptr;
 
         return 0;
     }
